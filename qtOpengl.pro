@@ -5,7 +5,7 @@
 #-------------------------------------------------
 
 QT       += core gui opengl
-LIBS += -lGLU -lglut
+LIBS += -lGLU -lglut -ldl -lGL -lGLEW
 
 CONFIG += c++11
 
@@ -27,7 +27,10 @@ DEFINES += QT_DEPRECATED_WARNINGS
 
 
 SOURCES += main.cpp \
-    myglwidget.cpp
+    myglwidget.cpp \
+    myglwidget_controls_and_camera.cpp \
+    myglwidget_general.cpp \
+    myglwidget_shapes_drawing.cpp
 
 HEADERS  += \
     myglwidget.h
