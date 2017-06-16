@@ -45,8 +45,8 @@ class MyGLWidget : public QGLWidget {
   float pos_x_ = 0;
   float pos_y_ = 0;
   float pos_z_ = 0;
-  float rotation_x_ = 0;
-  float rotation_y_ = 0;
+  float rotation_x_ = 43.5;
+  float rotation_y_ = -231;
 
   // configuration constants
   const float FORWARD_SPEED = 0.1;
@@ -70,7 +70,7 @@ class MyGLWidget : public QGLWidget {
 
   // image scene generation is based on
   QImage terrain_map_;
-  const QString map_path_{
+  const QString kMapPath{
       "/home/maktel/Dropbox/Studia/programming/QtProjects/qtOpengl/"
       "terrain_map_1.jpg"};
   int terrain_height_;
@@ -86,7 +86,7 @@ class MyGLWidget : public QGLWidget {
   // terrain generation constants
   const float TERRAIN_SPREAD = 50;
   const float HEIGHT_SPREAD = 2;
-  const float SEA_LEVEL = 0;
+  const float SEA_LEVEL = -10;
 
   void drawTerrain();
 
@@ -97,6 +97,13 @@ class MyGLWidget : public QGLWidget {
   GLfloat light_pos_[4]{0, 0, 0, 0};
   int light_dir_ = 1;
   void moveLightPosition();
+
+  // textures
+  QImage surface_texture_img_;
+  GLuint surface_texture_handle_;
+  const QString kTexturePath{
+      "/home/maktel/Dropbox/Studia/programming/QtProjects/qtOpengl/"
+      "texture_1.jpg"};
 };
 
 #endif  // MYGLWIDGET_H

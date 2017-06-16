@@ -38,8 +38,11 @@ void MyGLWidget::initializeGL() {
   glEnable(GL_DEPTH_TEST);
   glEnable(GL_NORMALIZE);
 
+  // nicer perspective calculations
+  //  glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);
+
   // load and set up terrain map
-  terrain_map_ = QImage(map_path_).convertToFormat(QImage::Format_Grayscale8);
+  terrain_map_ = QImage(kMapPath).convertToFormat(QImage::Format_Grayscale8);
   terrain_height_ = terrain_map_.height();
   terrain_width_ = terrain_map_.width();
 
@@ -56,13 +59,31 @@ void MyGLWidget::initializeGL() {
   glGenBuffers(buffer_size_, indices_buffer_);
   glGenBuffers(buffer_size_, normals_buffer_);
 
+  // load and set up textures
+  glEnable(GL_TEXTURE_2D);
+  glGenTextures(1, &surface_texture_handle_);
+
+  surface_texture_img_ = QGLWidget::convertToGLFormat(QImage(kTexturePath));
+  glBindTexture(GL_TEXTURE_2D, surface_texture_handle_);
+  glTexImage2D(GL_TEXTURE_2D, 0, 4, surface_texture_img_.width(),
+               surface_texture_img_.height(), 0, GL_RGBA, GL_UNSIGNED_BYTE,
+               surface_texture_img_.bits());
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+  glBindTexture(GL_TEXTURE_2D, 0);
+  gluBuild2DMipmaps(GL_TEXTURE_2D, GL_RGBA, surface_texture_img_.width(),
+                    surface_texture_img_.height(), GL_RGBA, GL_UNSIGNED_BYTE,
+                    surface_texture_img_.bits());
+
+
   generateTerrain();
+  moveLightPosition();
 }
 
 void MyGLWidget::paintGL() {
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-  moveLightPosition();
+  //  moveLightPosition();
 
   glMatrixMode(GL_MODELVIEW);
   glLoadIdentity();
@@ -292,11 +313,23 @@ void MyGLWidget::drawTerrain() {
   glMaterialfv(GL_FRONT, GL_SPECULAR, spec);
   glMateriali(GL_FRONT, GL_SHININESS, 20);
 
-  for (int y = 0; y < buffer_size_; ++y) {
-    glEnableClientState(GL_VERTEX_ARRAY);
-    glEnableClientState(GL_COLOR_ARRAY);
-    glEnableClientState(GL_NORMAL_ARRAY);
 
+  glEnableClientState(GL_VERTEX_ARRAY);
+  glEnableClientState(GL_COLOR_ARRAY);
+  glEnableClientState(GL_NORMAL_ARRAY);
+  glEnable(GL_TEXTURE_GEN_S);
+  glEnable(GL_TEXTURE_GEN_T);
+  glEnable(GL_TEXTURE_GEN_R);
+
+  glTexGeni(GL_S, GL_TEXTURE_GEN_MODE, GL_OBJECT_LINEAR);
+  glTexGeni(GL_T, GL_TEXTURE_GEN_MODE, GL_OBJECT_LINEAR);
+  GLfloat xPlane[] = {1.0, 0.0, 0.0, 0.0};
+  GLfloat zPlane[] = {0.0, 0.0, 1.0, 0.0};
+  glTexGenfv(GL_S, GL_OBJECT_PLANE, xPlane);
+  glTexGenfv(GL_T, GL_OBJECT_PLANE, zPlane);
+
+
+  for (int y = 0; y < buffer_size_; ++y) {
     glBindBuffer(GL_ARRAY_BUFFER, vertices_buffer_[y]);
     glVertexPointer(3, GL_FLOAT, 0, 0);
     glBindBuffer(GL_ARRAY_BUFFER, colors_buffer_[y]);
@@ -305,11 +338,16 @@ void MyGLWidget::drawTerrain() {
     glNormalPointer(GL_FLOAT, 0, 0);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indices_buffer_[y]);
     glDrawElements(GL_TRIANGLES, 6 * (terrain_width_ - 1), GL_UNSIGNED_INT, 0);
-
-    glDisableClientState(GL_VERTEX_ARRAY);
-    glDisableClientState(GL_COLOR_ARRAY);
-    glDisableClientState(GL_NORMAL_ARRAY);
   }
+
+  glDisable(GL_TEXTURE_GEN_S);
+  glDisable(GL_TEXTURE_GEN_T);
+  glDisable(GL_TEXTURE_GEN_R);
+  glDisableClientState(GL_VERTEX_ARRAY);
+  glDisableClientState(GL_COLOR_ARRAY);
+  glDisableClientState(GL_NORMAL_ARRAY);
+
+
   glPopAttrib();
 
   glEnable(GL_LIGHTING);
