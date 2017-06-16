@@ -19,6 +19,10 @@ void MyGLWidget::keyPressEvent(QKeyEvent* e) {
     case Qt::Key_D: {
       moveViewmodel(-SIDEWAYS_SPEED, SIDEWAYS);
     } break;
+
+    case Qt::Key_L: {
+      moveLightPosition();
+    } break;
   }
 
   updateGL();

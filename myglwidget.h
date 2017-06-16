@@ -79,15 +79,24 @@ class MyGLWidget : public QGLWidget {
   GLuint* vertices_buffer_;
   GLuint* colors_buffer_;
   GLuint* indices_buffer_;
+  GLuint* normals_buffer_;
   int buffer_size_;
 
   void generateTerrain();
   // terrain generation constants
   const float TERRAIN_SPREAD = 50;
-  const float HEIGHT_SPREAD = -3;
+  const float HEIGHT_SPREAD = 2;
   const float SEA_LEVEL = 0;
 
   void drawTerrain();
+
+  // lighting
+  const GLfloat LIGHT_STEPS = 10;
+  void calcNormal(vec3f p1, vec3f p2, vec3f p3, vec3f out);
+  void calcVersor(vec3f vec);
+  GLfloat light_pos_[4]{0, 0, 0, 0};
+  int light_dir_ = 1;
+  void moveLightPosition();
 };
 
 #endif  // MYGLWIDGET_H
