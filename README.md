@@ -1,7 +1,7 @@
 # QT OpenGL 3D
 
 Things done:
-* moving camera using view model transformations
+* moving camera using view model transformations (steer with WSAD and LMB pressed)
 * terrain map generated from file using buffers
 * terrain lighting (normals for triangles and points)
 * moving light source (change its position with L key)
