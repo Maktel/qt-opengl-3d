@@ -30,7 +30,8 @@ SOURCES += main.cpp \
     myglwidget.cpp \
     myglwidget_controls_and_camera.cpp \
     myglwidget_general.cpp \
-    myglwidget_shapes_drawing.cpp
+    myglwidget_terrain.cpp \
+    myglwidget_drawing_skybox.cpp
 
 HEADERS  += \
     myglwidget.h

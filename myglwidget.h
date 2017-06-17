@@ -3,6 +3,7 @@
 
 #define GLEW_STATIC
 #include <GL/glew.h>
+#include <GL/glut.h>
 
 #include <QApplication>
 #include <QDebug>
@@ -45,8 +46,8 @@ class MyGLWidget : public QGLWidget {
   float pos_x_ = 0;
   float pos_y_ = 0;
   float pos_z_ = 0;
-  float rotation_x_ = 43.5;
-  float rotation_y_ = -231;
+  float rotation_x_ = -1;
+  float rotation_y_ = -224;
 
   // configuration constants
   const float FORWARD_SPEED = 0.1;
@@ -66,6 +67,7 @@ class MyGLWidget : public QGLWidget {
   // drawing functions
   void drawCube();
   void drawPlanes();
+  void drawTeapot();
 
 
   // image scene generation is based on
@@ -84,19 +86,20 @@ class MyGLWidget : public QGLWidget {
 
   void generateTerrain();
   // terrain generation constants
-  const float TERRAIN_SPREAD = 50;
+  const float TERRAIN_SPREAD = 40;
   const float HEIGHT_SPREAD = 2;
-  const float SEA_LEVEL = -10;
+  const float SEA_LEVEL = -3;
 
   void drawTerrain();
 
   // lighting
+  void moveLightPosition();
+  void setLighting();
   const GLfloat LIGHT_STEPS = 10;
   void calcNormal(vec3f p1, vec3f p2, vec3f p3, vec3f out);
   void calcVersor(vec3f vec);
   GLfloat light_pos_[4]{0, 0, 0, 0};
   int light_dir_ = 1;
-  void moveLightPosition();
 
   // textures
   QImage surface_texture_img_;
@@ -104,6 +107,21 @@ class MyGLWidget : public QGLWidget {
   const QString kTexturePath{
       "/home/maktel/Dropbox/Studia/programming/QtProjects/qtOpengl/"
       "texture_1.jpg"};
+
+  // skybox
+  void drawSkybox();
+  void prepareSkybox();
+  GLuint skybox_texture_handle_;
+  GLuint skybox_buffer_;
+  const GLfloat sb_scl_ = 30.0;
+  const QString kSkyboxPath{
+      "/home/maktel/Dropbox/Studia/programming/QtProjects/qtOpengl/"};
+  const QString kSkyboxXPPath{kSkyboxPath + "sky_zp.png"};
+  const QString kSkyboxXNPath{kSkyboxPath + "sky_zn.png"};
+  const QString kSkyboxYPPath{kSkyboxPath + "sky_yp.png"};
+  const QString kSkyboxYNPath{kSkyboxPath + "sky_yn.png"};
+  const QString kSkyboxZPPath{kSkyboxPath + "sky_xp.png"};
+  const QString kSkyboxZNPath{kSkyboxPath + "sky_xn.png"};
 };
 
 #endif  // MYGLWIDGET_H
